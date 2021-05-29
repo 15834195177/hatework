@@ -4,6 +4,6 @@ namespace Phptool;
 class Tool{
     public function random()
     {
-        return '11111111';
+        return '111';
     }
 }
