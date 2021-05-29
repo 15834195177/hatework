@@ -2,7 +2,7 @@
 namespace Phptool;
 
 class Tool{
-    public function random()
+    public static function random()
     {
         return '111111';
     }
