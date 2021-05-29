@@ -1,7 +1,7 @@
 {
   "name": "mine/phptool",
   "type": "library",
-  "description": "the mine php tool first",
+  "description": "the mine php tool ",
   "license": "MIT",
   "authors": [
     {
@@ -9,6 +9,7 @@
       "email": "1262003227@qq.com"
     }
   ],
+  "version": "v1.0.1",
   "minimum-stability": "dev",
   "require": {},
   "autoload": {
