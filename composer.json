@@ -1,7 +1,7 @@
 {
   "name": "mine/phptool",
   "type": "library",
-  "description": "the mint php tool",
+  "description": "the mine php tool",
   "license": "MIT",
   "authors": [
     {
