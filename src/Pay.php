@@ -79,14 +79,14 @@ class Pay
         curl_close($ch);
         $retjson = json_decode($ret, true);
 
-        if ($retjson['code'] == 000000) {
+        if ($retjson['code'] == "000000") {
             if ($this->checkSign($retjson["data"])) {
                 return $retjson;
             } else {
-                return ['error' => 0, 'err_msg' => '返回数据验证签名失败'];
+                return ['code' => 0, 'msg' => '返回数据验证签名失败'];
             }
         } else {
-            return ['error' => 1, 'err_msg' => $retjson['msg']];
+            return $retjson;
         }
     }
 
