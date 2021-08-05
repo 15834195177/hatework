@@ -77,12 +77,16 @@ class Pay
         curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($post_data));
         $ret = curl_exec($ch);
         curl_close($ch);
-        echo '  return:' . $ret;
         $retjson = json_decode($ret, true);
-        if ($this->checkSign($retjson["data"])) {
-            echo '验签成功';
+
+        if ($retjson['code'] == 000000) {
+            if ($this->checkSign($retjson["data"])) {
+                return $retjson;
+            } else {
+                return ['error' => 0, 'err_msg' => '返回数据验证签名失败'];
+            }
         } else {
-            echo '验签失败';
+            return ['error' => 1, 'err_msg' => $retjson['msg']];
         }
     }
 
