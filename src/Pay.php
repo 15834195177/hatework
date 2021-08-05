@@ -82,13 +82,14 @@ class Pay
         if ($retjson['code'] == "000000") {
             if ($this->checkSign($retjson["data"])) {
                 $retjson['data']['payInfo'] = json_decode($retjson['data']['payInfo'], true);
-                return $retjson;
-            } else {
-                return ['code' => 0, 'msg' => '返回数据验证签名失败'];
+                return $retjson['data'];
             }
-        } else {
-            return $retjson;
+
+            throw  new \Exception('返回数据验证签名失败');
         }
+
+        throw new \Exception($retjson['msg']);
+
     }
 
     //验签
