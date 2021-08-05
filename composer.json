@@ -9,7 +9,7 @@
       "email": "1262003227@qq.com"
     }
   ],
-  "version": "v1.2.1",
+  "version": "v1.2.2",
   "minimum-stability": "dev",
   "require": {},
   "autoload": {
