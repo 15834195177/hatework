@@ -102,7 +102,7 @@ class Pay
             throw  new \Exception('返回数据验证签名失败');
         }
 
-        $function($data);
+        $function($retjson);
 
         return true;
     }
