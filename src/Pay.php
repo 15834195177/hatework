@@ -89,7 +89,22 @@ class Pay
         }
 
         throw new \Exception($retjson['msg']);
+    }
 
+    //解析通知参数
+    public function decryptNotifyData($function)
+    {
+        $data    = $_GET['data'];
+        $data    = $this->decryptData($data, $this->publicKey);
+        $retjson = json_decode($data, true);
+
+        if (!$this->checkSign($retjson)) {
+            throw  new \Exception('返回数据验证签名失败');
+        }
+
+        $function($data);
+
+        return true;
     }
 
     //验签
@@ -136,6 +151,13 @@ class Pay
         $privateWorker = new KeyWorker($this->privateKey, 1);
         $data          = $privateWorker->encrypt(json_encode($params));
 
+        return $data;
+    }
+
+    protected function decryptData($params)
+    {
+        $publicWorker = new KeyWorker($this->publicKey, 1);
+        $data         = $publicWorker->decrypt($params);
         return $data;
     }
 }
