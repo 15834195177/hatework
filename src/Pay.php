@@ -21,6 +21,7 @@ class Pay
     const ORDER_INFO_URL = 'https://platform.mhxxkj.com/paygateway/mbpay/order/query/v1_1';
     const REFUND_URL = 'https://platform.mhxxkj.com/paygateway/mbrefund/orderRefund/v1';
     const REFUND_QUERY_URL = 'https://platform.mhxxkj.com/paygateway/mbrefund/orderRefundQuery/v1';
+    const SETTLE_RECORD_URL = 'https://platform.mhxxkj.com/paygateway/register/querySettRecord/v1'; //结算记录
 
     public function __construct($config)
     {
@@ -100,6 +101,17 @@ class Pay
     }
 
     /**
+     * 分账记录
+     * @param $settle
+     * @return mixed
+     * @throws \Exception
+     */
+    public function settle_record($settle)
+    {
+        return $this->request(self::SETTLE_RECORD_URL, $settle);
+    }
+
+    /**
      * 解析支付回调数据
      * @param $function
      * @return bool
@@ -119,7 +131,6 @@ class Pay
 
         return true;
     }
-
 
     /**
      * 解析退款回调数据
@@ -144,10 +155,6 @@ class Pay
 
     private function request($url, $data)
     {
-        $data['merAccount'] = $this->merAccount;
-        $data['time']       = time();
-        $data['sign']       = $this->getSign($data);
-
         $ch      = curl_init($url);
         $timeout = 6000;
         curl_setopt($ch, CURLOPT_POST, 1);
@@ -158,8 +165,17 @@ class Pay
         curl_setopt($ch, CURLOPT_TIMEOUT, $timeout);
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false); // 跳过证书检查
 
-        $encode_data = $this->encryptData($data);
-        $post_data   = [
+        //构造请求参数
+        if (in_array($url, [self::SETTLE_RECORD_URL])) {
+            $data['userNo'] = $this->merNo;
+        } else {
+            $data['merAccount'] = $this->merAccount;
+        }
+
+        $data['time'] = time();
+        $data['sign'] = $this->getSign($data);
+        $encode_data  = $this->encryptData($data);
+        $post_data    = [
             'merAccount' => $this->merAccount,
             'data'       => $encode_data
         ];
@@ -171,7 +187,8 @@ class Pay
         $result = json_decode($result, true);
 
         if ($result['code'] == "000000") {
-            if ($this->checkSign($result["data"])) {
+
+            if (empty($result['data']['sign']) || $this->checkSign($result["data"])) {
                 return $result['data'];
             }
 
